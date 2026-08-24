@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Library Command Center - ศูนย์ควบคุมห้องสมุดอัจฉริยะ</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[#051424] text-slate-100 font-['Kanit'] antialiased min-h-screen flex flex-col">
+
+  <!-- Header / Navigation Bar -->
+  <header class="glass-nav sticky top-0 z-40 px-4 lg:px-8 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+        <span class="material-symbols-outlined text-white text-2xl">local_library</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
+          Smart Library Command Center
+        </h1>
+        <p class="text-xs text-slate-400">ระบบศูนย์ควบคุมห้องสมุดอัจฉริยะ Clean Architecture</p>
+      </div>
+    </div>
+
+    <!-- Security & Protection Badge -->
+    <div class="hidden md:flex items-center gap-3">
+      <div class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-1.5 shadow-sm">
+        <span class="material-symbols-outlined text-sm">shield</span>
+        <span>Formula Protection: Active 🛡️</span>
+      </div>
+      <div class="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-medium flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">cloud_done</span>
+        <span id="apiModeBadge">GAS API Connected</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex-1 flex flex-col md:flex-row">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-[#0d1c2d]/80 border-b md:border-b-0 md:border-r border-slate-800 p-4 flex flex-col gap-2 shrink-0">
+      <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-1">เมนูหลัก (Main Center)</div>
+      
+      <button class="nav-item active" data-tab="overview" onclick="switchTab('overview')">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Overview Dashboard</span>
+      </button>
+
+      <button class="nav-item" data-tab="books" onclick="switchTab('books')">
+        <span class="material-symbols-outlined">menu_book</span>
+        <span>Books & RFID Catalog</span>
+      </button>
+
+      <button class="nav-item" data-tab="circulation" onclick="switchTab('circulation')">
+        <span class="material-symbols-outlined">sync_alt</span>
+        <span>Circulation Desk</span>
+      </button>
+
+      <button class="nav-item" data-tab="members" onclick="switchTab('members')">
+        <span class="material-symbols-outlined">group</span>
+        <span>Member Management</span>
+      </button>
+
+      <button class="nav-item" data-tab="iot" onclick="switchTab('iot')">
+        <span class="material-symbols-outlined">sensors</span>
+        <span>IoT Security Sensors</span>
+      </button>
+
+      <button class="nav-item" data-tab="drive" onclick="switchTab('drive')">
+        <span class="material-symbols-outlined">folder_open</span>
+        <span>Drive Storage Manager</span>
+      </button>
+
+      <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mt-4 mb-1">การตั้งค่า (System)</div>
+
+      <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Database Auto Setup</span>
+      </button>
+    </aside>
+
+    <!-- Content Workspace -->
+    <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
+      
+      <!-- ================= TAB 1: OVERVIEW DASHBOARD ================= -->
+      <section id="tab-overview" class="tab-content space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Overview Command Dashboard</h2>
+            <p class="text-sm text-slate-400">ภาพรวมสถิติ ข้อมูล KPI และเซ็นเซอร์ความปลอดภัยประจำวัน</p>
+          </div>
+          <button onclick="loadOverviewData()" class="px-4 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-sm font-medium flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>รีเฟรชข้อมูล</span>
+          </button>
+        </div>
+
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass-card p-5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">หนังสือทั้งหมดในคลัง</p>
+                <h3 class="text-3xl font-bold text-white mt-1" id="kpiTotalBooks">0</h3>
+              </div>
+              <div class="p-3 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <span class="material-symbols-outlined">book</span>
+              </div>
+            </div>
+            <p class="text-xs text-emerald-400 mt-3 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              <span id="kpiAvailableBooks">0 เล่มพร้อมยืม</span>
+            </p>
+          </div>
+
+          <div class="glass-card p-5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">สมาชิกทั้งหมด</p>
+                <h3 class="text-3xl font-bold text-white mt-1" id="kpiTotalMembers">0</h3>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 flex items-center gap-1">
+              <span id="kpiActiveMembers">0 สมาชิกปกติ</span>
+            </p>
+          </div>
+
+          <div class="glass-card p-5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">รายการยืมอยู่ปัจจุบัน</p>
+                <h3 class="text-3xl font-bold text-cyan-400 mt-1" id="kpiActiveBorrows">0</h3>
+              </div>
+              <div class="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <span class="material-symbols-outlined">assignment</span>
+              </div>
+            </div>
+            <p class="text-xs text-amber-400 mt-3 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">warning</span>
+              <span id="kpiOverdueCount">0 เกินกำหนดส่ง</span>
+            </p>
+          </div>
+
+          <div class="glass-card p-5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">สถานะเซ็นเซอร์ IoT</p>
+                <h3 class="text-3xl font-bold text-emerald-400 mt-1" id="kpiNormalSensors">0 / 0</h3>
+              </div>
+              <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                <span class="material-symbols-outlined">sensors</span>
+              </div>
+            </div>
+            <p class="text-xs text-emerald-400 mt-3 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">wifi_tethering</span>
+              <span>ประตู RFID ออนไลน์ปกติ</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Dynamic Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-card p-5 lg:col-span-2">
+            <h3 class="text-md font-semibold text-white mb-4">สถิติการยืม-คืนหนังสือ</h3>
+            <div class="h-64">
+              <canvas id="borrowChart"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-card p-5">
+            <h3 class="text-md font-semibold text-white mb-4">สัดส่วนหมวดหมู่หนังสือ</h3>
+            <div class="h-64">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 2: BOOKS & RFID CATALOG ================= -->
+      <section id="tab-books" class="tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Books & RFID Catalog</h2>
+            <p class="text-sm text-slate-400">คลังจัดการรายการหนังสือ คัดกรองหมวดหมู่ และจับคู่แท็ก RFID</p>
+          </div>
+          <button onclick="openBookModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/20 hover:opacity-90 transition">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>เพิ่มหนังสือใหม่</span>
+          </button>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="glass-card p-4 flex flex-col sm:flex-row gap-3">
+          <div class="flex-1 relative">
+            <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-sm">search</span>
+            <input type="text" id="searchBookInput" placeholder="ค้นหาตามชื่อหนังสือ, ผู้แต่ง, ISBN หรือ RFID Tag..." class="form-input pl-9" onkeyup="filterBooks()">
+          </div>
+          <select id="filterCategorySelect" class="form-input sm:w-48" onchange="filterBooks()">
+            <option value="">ทุกหมวดหมู่</option>
+            <option value="เทคโนโลยีสารสนเทศ">เทคโนโลยีสารสนเทศ</option>
+            <option value="วิศวกรรมซอฟต์แวร์">วิศวกรรมซอฟต์แวร์</option>
+            <option value="ไซเบอร์ซีเคียวริตี้">ไซเบอร์ซีเคียวริตี้</option>
+          </select>
+        </div>
+
+        <!-- Books Table -->
+        <div class="glass-card overflow-hidden">
+          <div class="table-container">
+            <table class="data-table" id="booksTable">
+              <thead>
+                <tr>
+                  <th>ปกหนังสือ</th>
+                  <th>รหัส / RFID</th>
+                  <th>ชื่อหนังสือ</th>
+                  <th>ผู้แต่ง / ISBN</th>
+                  <th>ชั้นวาง / หมวดหมู่</th>
+                  <th>สถานะ</th>
+                  <th>จำนวนคงเหลือ</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="booksTableBody">
+                <!-- JavaScript Rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: CIRCULATION DESK ================= -->
+      <section id="tab-circulation" class="tab-content hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Circulation Borrow & Return Desk</h2>
+          <p class="text-sm text-slate-400">โต๊ะบริการยืม-คืนหนังสือ ตรวจสอบสิทธิ์สมาชิก คำนวณวันกำหนดส่งและค่าปรับ</p>
+        </div>
+
+        <!-- Borrow & Return Action Forms -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Borrow Form -->
+          <div class="glass-card p-6 space-y-4">
+            <div class="flex items-center gap-3 text-cyan-400">
+              <span class="material-symbols-outlined text-2xl">book_online</span>
+              <h3 class="text-lg font-bold text-white">ทำรายการยืมหนังสือ (Borrow)</h3>
+            </div>
+            
+            <form id="borrowForm" onsubmit="handleBorrow(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">รหัสสมาชิก (Member ID)</label>
+                <input type="text" id="borrowMemberId" placeholder="เช่น MEM-2026-001" required class="form-input">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">รหัสหนังสือ / RFID Tag</label>
+                <input type="text" id="borrowBookId" placeholder="เช่น BK-2026-001 หรือสแกน RFID" required class="form-input">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">หมายเหตุเพิ่มเติม</label>
+                <input type="text" id="borrowNotes" placeholder="เช่น ยืมเพื่อการวิจัย" class="form-input">
+              </div>
+
+              <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-lg shadow-cyan-500/20 hover:opacity-90 transition flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span>ยืนยันทำรายการยืม</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Return Form / Active Transactions -->
+          <div class="glass-card p-6 space-y-4">
+            <div class="flex items-center gap-3 text-emerald-400">
+              <span class="material-symbols-outlined text-2xl">assignment_return</span>
+              <h3 class="text-lg font-bold text-white">ทำรายการคืนหนังสือ (Return)</h3>
+            </div>
+
+            <div class="space-y-3" id="activeBorrowsList">
+              <!-- Active Borrow Items Rendered by JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= TAB 4: MEMBER MANAGEMENT ================= -->
+      <section id="tab-members" class="tab-content hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Member Management</h2>
+            <p class="text-sm text-slate-400">ระบบบริหารจัดการสมาชิก กำหนดประเภทสมาชิกและติดตามสิทธิ์การยืม</p>
+          </div>
+          <button onclick="openMemberModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/20 hover:opacity-90 transition">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+            <span>เพิ่มสมาชิกใหม่</span>
+          </button>
+        </div>
+
+        <div class="glass-card overflow-hidden">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>โปรไฟล์</th>
+                  <th>รหัสสมาชิก</th>
+                  <th>ชื่อ-นามสกุล</th>
+                  <th>อีเมล / เบอร์โทร</th>
+                  <th>ประเภท</th>
+                  <th>สถานะ</th>
+                  <th>ยืมอยู่ปัจจุบัน</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="membersTableBody">
+                <!-- JS Rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 5: IOT SECURITY SENSORS ================= -->
+      <section id="tab-iot" class="tab-content hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">IoT Security & Telemetry Monitors</h2>
+          <p class="text-sm text-slate-400">ติดตามสถานะประตูกั้น RFID สภาพแวดล้อม และระบบความปลอดภัยแบบ Real-time</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="sensorsGrid">
+          <!-- JS Rendered Sensors -->
+        </div>
+      </section>
+
+      <!-- ================= TAB 6: DRIVE FILE STORAGE MANAGER ================= -->
+      <section id="tab-drive" class="tab-content hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Google Drive File Manager</h2>
+            <p class="text-sm text-slate-400">ระบบจัดเก็บไฟล์พร้อม File Whitelist (บล็อกไฟล์ .gs, .md, .env โดยเด็ดขาด)</p>
+          </div>
+          <button onclick="openUploadModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 hover:opacity-90 transition">
+            <span class="material-symbols-outlined text-sm">cloud_upload</span>
+            <span>อัปโหลดไฟล์ไป Google Drive</span>
+          </button>
+        </div>
+
+        <div class="glass-card overflow-hidden">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ชื่อไฟล์</th>
+                  <th>โฟลเดอร์</th>
+                  <th>ขนาดไฟล์</th>
+                  <th>ผู้อัปโหลด</th>
+                  <th>วันเวลา</th>
+                  <th>Direct Public Link</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="driveTableBody">
+                <!-- JS Rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 7: SETTINGS & SETUP ================= -->
+      <section id="tab-settings" class="tab-content hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">System Settings & Auto Database Setup</h2>
+          <p class="text-sm text-slate-400">ตั้งค่าการเชื่อมต่อ และรันระบบสร้างตารางฐานข้อมูลอัตโนมัติ</p>
+        </div>
+
+        <div class="glass-card p-6 max-w-2xl space-y-6">
+          <div class="flex items-center gap-4 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30">
+            <span class="material-symbols-outlined text-cyan-400 text-3xl">terminal</span>
+            <div>
+              <h4 class="font-bold text-white">Auto-Database & Folder Setup Launcher</h4>
+              <p class="text-xs text-slate-300">รันฟังก์ชัน setupDatabase() เพื่อเนรมิต 6 ตารางใน Google Sheet และ 3 โฟลเดอร์ใน Google Drive อัตโนมัติ</p>
+            </div>
+          </div>
+
+          <button onclick="triggerSetupDatabase()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-lg shadow-cyan-500/20 hover:opacity-90 transition flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined">play_circle</span>
+            <span>เนรมิตตารางและโฟลเดอร์อัตโนมัติ (Run setupDatabase)</span>
+          </button>
+
+          <div class="border-t border-slate-800 pt-4 space-y-3">
+            <h4 class="text-sm font-semibold text-slate-300">สถานะความปลอดภัยและการป้องกันข้อมูล</h4>
+            <ul class="text-xs text-slate-400 space-y-2">
+              <li class="flex items-center gap-2 text-emerald-400">
+                <span class="material-symbols-outlined text-sm">check</span>
+                <span>Formula Protection Engine: ล้างสัญลักษณ์สูตร (=, +, -, @) อัตโนมัติ</span>
+              </li>
+              <li class="flex items-center gap-2 text-emerald-400">
+                <span class="material-symbols-outlined text-sm">check</span>
+                <span>Sensitive File Prohibition: บล็อกไฟล์ .gs, .md, .env ไม่ให้อัปโหลด</span>
+              </li>
+              <li class="flex items-center gap-2 text-emerald-400">
+                <span class="material-symbols-outlined text-sm">check</span>
+                <span>Concurrency Protection: ใช้ LockService ป้องกัน Data Race</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex-col items-center justify-center gap-4">
+    <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin"></div>
+    <p id="loadingText" class="text-sm font-medium text-cyan-300">กำลังประมวลผล...</p>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Book Modal (Add / Edit) -->
+  <div id="bookModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-white" id="bookModalTitle">เพิ่มหนังสือใหม่</h3>
+        <button onclick="closeBookModal()" class="text-slate-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+      </div>
+
+      <form id="bookForm" onsubmit="saveBook(event)" class="space-y-3">
+        <input type="hidden" id="modalBookId">
+        
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">ชื่อหนังสือ</label>
+          <input type="text" id="modalBookTitle" required class="form-input">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ผู้แต่ง</label>
+            <input type="text" id="modalBookAuthor" required class="form-input">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ISBN</label>
+            <input type="text" id="modalBookIsbn" class="form-input">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">RFID Tag</label>
+            <input type="text" id="modalBookRfid" placeholder="RFID-BK-XXX" class="form-input">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">หมวดหมู่</label>
+            <select id="modalBookCategory" class="form-input">
+              <option value="เทคโนโลยีสารสนเทศ">เทคโนโลยีสารสนเทศ</option>
+              <option value="วิศวกรรมซอฟต์แวร์">วิศวกรรมซอฟต์แวร์</option>
+              <option value="ไซเบอร์ซีเคียวริตี้">ไซเบอร์ซีเคียวริตี้</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ชั้นวาง</label>
+            <input type="text" id="modalBookShelf" placeholder="Zone A - Shelf 01" class="form-input">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">จำนวนเล่มทั้งหมด</label>
+            <input type="number" id="modalBookTotal" value="1" min="1" class="form-input">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" onclick="closeBookModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 text-white text-sm font-semibold">บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-white">อัปโหลดไฟล์ไป Google Drive</h3>
+        <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+      </div>
+
+      <form id="uploadForm" onsubmit="handleUploadFile(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">เลือกโฟลเดอร์ปลายทาง</label>
+          <select id="uploadFolderType" class="form-input">
+            <option value="books">/uploads/books (ปกหนังสือ / e-Book)</option>
+            <option value="members">/uploads/members (รูปโปรไฟล์สมาชิก)</option>
+            <option value="attachments">/uploads/attachments (เอกสารทั่วไป)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">เลือกไฟล์ที่ต้องการอัปโหลด</label>
+          <input type="file" id="uploadFileInput" required class="form-input text-xs">
+          <p class="text-[10px] text-amber-400 mt-1">⚠️ ห้ามอัปโหลดไฟล์ความลับ (.gs, .md, .env) อนุญาตเฉพาะรูปภาพและเอกสารปกติ</p>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" onclick="closeUploadModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold">เริ่มอัปโหลด</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/env.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

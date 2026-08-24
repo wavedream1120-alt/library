@@ -1,0 +1,509 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dashboard | Smart Library OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#00363e",
+                    "on-error": "#690005",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "alert-red": "#EF4444",
+                    "on-surface": "#d4e4fa",
+                    "on-primary": "#283044",
+                    "primary-fixed-dim": "#bec6e0",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "on-secondary-container": "#aeb9d0",
+                    "surface-container-low": "#0d1c2d",
+                    "error": "#ffb4ab",
+                    "on-background": "#d4e4fa",
+                    "glass-stroke": "rgba(255, 255, 255, 0.1)",
+                    "surface-container-highest": "#273647",
+                    "on-secondary": "#263143",
+                    "tertiary": "#2fd9f4",
+                    "surface-container-high": "#1c2b3c",
+                    "alert-amber": "#F59E0B",
+                    "inverse-on-surface": "#233143",
+                    "secondary-container": "#3e495d",
+                    "tertiary-container": "#001b20",
+                    "on-error-container": "#ffdad6",
+                    "inverse-surface": "#d4e4fa",
+                    "accent-emerald": "#10B981",
+                    "secondary": "#bcc7de",
+                    "surface-dim": "#051424",
+                    "on-surface-variant": "#c6c6cd",
+                    "inverse-primary": "#565e74",
+                    "outline-variant": "#45464d",
+                    "surface": "#051424",
+                    "surface-container": "#122131",
+                    "outline": "#909097",
+                    "surface-bright": "#2c3a4c",
+                    "on-tertiary-fixed": "#001f25",
+                    "on-primary-fixed": "#131b2e",
+                    "tertiary-fixed-dim": "#2fd9f4",
+                    "error-container": "#93000a",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-container": "#008ea1",
+                    "tertiary-fixed": "#a2eeff",
+                    "on-primary-container": "#798098",
+                    "primary-container": "#0f172a",
+                    "primary": "#bec6e0",
+                    "surface-tint": "#bec6e0",
+                    "secondary-fixed": "#d8e3fb",
+                    "surface-variant": "#273647",
+                    "background": "#051424",
+                    "on-tertiary-fixed-variant": "#004e5a",
+                    "on-secondary-fixed": "#111c2d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "margin-page": "40px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-lg": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(47, 217, 244, 0.2);
+        }
+        .neon-glow-red {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .map-zone {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .map-zone:hover {
+            fill-opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen flex flex-col z-40 bg-surface-container-low dark:bg-surface-container-lowest border-r border-glass-stroke w-64">
+<div class="p-6">
+<h1 class="font-headline-md text-headline-md font-bold text-tertiary">Smart Library OS</h1>
+<p class="text-on-surface-variant font-label-lg mt-1">Enterprise Admin</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Active: Dashboard -->
+<a class="flex items-center px-4 py-3 rounded-lg text-tertiary font-bold border-r-2 border-tertiary bg-tertiary-container/10 transition-transform active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span>
+<span class="font-body-md">RFID Inventory</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">sync_alt</span>
+<span class="font-body-md">Circulation</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">conveyor_belt</span>
+<span class="font-body-md">Member Kiosk</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">router</span>
+<span class="font-body-md">IoT Hardware</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">search_spark</span>
+<span class="font-body-md">AI Search</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-body-md">Analytics</span>
+</a>
+</nav>
+<div class="p-4 border-t border-glass-stroke">
+<div class="flex items-center p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/20 mb-4">
+<div class="w-2 h-2 rounded-full bg-accent-emerald animate-pulse mr-3"></div>
+<span class="text-accent-emerald font-label-lg">System Status: Optimal</span>
+</div>
+<a class="flex items-center px-4 py-2 text-on-surface-variant hover:text-tertiary font-body-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span> Settings
+            </a>
+<a class="flex items-center px-4 py-2 text-on-surface-variant hover:text-tertiary font-body-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">help</span> Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-30 flex justify-between items-center w-full px-gutter h-16 bg-surface/80 backdrop-blur-xl border-b border-glass-stroke shadow-sm">
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="bg-surface-container-high border-none rounded-full py-2 pl-10 pr-4 w-80 text-body-md focus:ring-1 focus:ring-tertiary/50 placeholder:text-on-surface-variant/50" placeholder="Global system search..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-tertiary/10 border border-tertiary/20 rounded-full">
+<span class="material-symbols-outlined text-tertiary text-[18px]">verified_user</span>
+<span class="font-label-lg text-tertiary">Role: Admin</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-tertiary transition-opacity active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-tertiary transition-opacity active:opacity-80">
+<span class="material-symbols-outlined">apps</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-tertiary/30">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a system administrator in a high-tech setting, with subtle blue rim lighting and a background of blurred server racks and digital interfaces. The mood is professional, sophisticated, and enterprise-focused, matching a dark slate and neon cyan UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLpZkVmzF2j9WoN64B42Z7qDGkPrhIfMTE3mlyVCISdedS49soppNBA2-fxC17hQUlglw-R2yCGMPCp3mjwtIBfeDAfPN957HAAGdYAN8GV1iWwf8q-6376BE480tt4GbwZXrt9aDowe72sRa9ehkpv9igAayfRjS64PHripSBS6mAJQ4n1F9uZj4dXPyx__CXsqKqzMs2Q_BBKcID-eBeRh8klGxSC2e556UOsMtsoROedM8rNcA">
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-margin-page space-y-8 max-w-[1440px] mx-auto w-full">
+<!-- Row 1: Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Live Seat Occupancy -->
+<div class="glass-panel p-6 rounded-xl neon-glow-cyan">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary">chair_alt</span>
+<span class="text-accent-emerald font-label-lg flex items-center"><span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>+2%</span>
+</div>
+<h3 class="text-on-surface-variant font-label-lg mb-1">Live Seat Occupancy</h3>
+<div class="flex items-end gap-2 mb-3">
+<span class="font-headline-lg text-headline-lg text-on-surface">78%</span>
+<span class="text-on-surface-variant font-body-md mb-1.5">/ 450 total</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<!-- Today's Circulation -->
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary">swap_horiz</span>
+<span class="text-on-surface-variant font-label-lg">Real-time</span>
+</div>
+<h3 class="text-on-surface-variant font-label-lg mb-1">Today's Circulation</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">1,240</span>
+<span class="text-on-surface-variant font-body-md mb-1.5">Items</span>
+</div>
+<div class="mt-4 flex items-center gap-1">
+<div class="h-1 w-full bg-accent-emerald/20 rounded-full overflow-hidden">
+<div class="bg-accent-emerald h-full w-[65%]"></div>
+</div>
+</div>
+</div>
+<!-- Active RFID Nodes -->
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary">sensors</span>
+<span class="text-accent-emerald font-label-lg">Stable</span>
+</div>
+<h3 class="text-on-surface-variant font-label-lg mb-1">Active RFID Nodes</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">42</span>
+<span class="text-on-surface-variant font-body-md mb-1.5">Online</span>
+</div>
+<p class="mt-4 text-label-md text-on-surface-variant/60 uppercase tracking-wider">Nodes: #NODE-01 to #NODE-42</p>
+</div>
+<!-- AI Return Queue -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-alert-amber">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-alert-amber" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="px-2 py-0.5 bg-alert-amber/10 text-alert-amber rounded text-[10px] font-bold">URGENT</span>
+</div>
+<h3 class="text-on-surface-variant font-label-lg mb-1">AI Return Queue</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">15</span>
+<span class="text-on-surface-variant font-body-md mb-1.5">Pending</span>
+</div>
+<p class="mt-4 text-label-md text-alert-amber">Estimated sort time: 4m 20s</p>
+</div>
+</div>
+<!-- Row 2: Interactive Smart Floor Map -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="p-6 border-b border-glass-stroke flex justify-between items-center">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Interactive 2D Smart Floor Map</h2>
+<p class="text-body-md text-on-surface-variant">Live asset location tracking • Floor 2 (Main Archive)</p>
+</div>
+<div class="flex gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-highest rounded-lg text-label-lg text-on-surface">
+<span class="w-2 h-2 rounded-full bg-alert-red neon-glow-red"></span> Misplaced Alerts (2)
+                        </div>
+<button class="px-4 py-1.5 bg-tertiary text-on-tertiary font-label-lg rounded-lg hover:opacity-90 transition-opacity">Floor Filter: Level 2</button>
+</div>
+</div>
+<div class="relative h-[400px] bg-surface-container-lowest p-8 flex items-center justify-center">
+<!-- Stylized Vector Map Representation -->
+<svg class="w-full h-full max-w-4xl opacity-80" viewBox="0 0 800 400">
+<!-- Floor Boundaries -->
+<rect fill="none" height="300" stroke="rgba(47, 217, 244, 0.3)" stroke-width="2" width="700" x="50" y="50"></rect>
+<!-- Reading Area -->
+<g class="map-zone">
+<rect fill="rgba(47, 217, 244, 0.05)" height="130" stroke="rgba(47, 217, 244, 0.2)" width="200" x="60" y="60"></rect>
+<text class="text-[12px] font-bold" fill="rgba(47, 217, 244, 0.6)" text-anchor="middle" x="160" y="130">READING AREA</text>
+</g>
+<!-- Kids Zone -->
+<g class="map-zone">
+<rect fill="rgba(16, 185, 129, 0.05)" height="140" stroke="rgba(16, 185, 129, 0.2)" width="200" x="60" y="200"></rect>
+<text class="text-[12px] font-bold" fill="rgba(16, 185, 129, 0.6)" text-anchor="middle" x="160" y="280">KIDS ZONE</text>
+</g>
+<!-- Science -->
+<g class="map-zone">
+<rect fill="rgba(47, 217, 244, 0.05)" height="280" stroke="rgba(47, 217, 244, 0.2)" width="220" x="270" y="60"></rect>
+<text class="text-[12px] font-bold" fill="rgba(47, 217, 244, 0.6)" text-anchor="middle" x="380" y="200">SCIENCE &amp; TECH</text>
+</g>
+<!-- Fiction -->
+<g class="map-zone">
+<rect fill="rgba(47, 217, 244, 0.05)" height="280" stroke="rgba(47, 217, 244, 0.2)" width="240" x="500" y="60"></rect>
+<text class="text-[12px] font-bold" fill="rgba(47, 217, 244, 0.6)" text-anchor="middle" x="620" y="200">FICTION</text>
+<!-- Misplaced Alert Glows -->
+<circle class="neon-glow-red animate-pulse" cx="580" cy="120" fill="#EF4444" r="8"></circle>
+<circle class="animate-pulse" cx="650" cy="240" fill="#F59E0B" r="8" style="filter: drop-shadow(0 0 5px #F59E0B)"></circle>
+</g>
+<!-- Active Asset Points (Cyan) -->
+<circle cx="300" cy="100" fill="#2fd9f4" r="3"></circle>
+<circle cx="310" cy="115" fill="#2fd9f4" r="3"></circle>
+<circle cx="120" cy="250" fill="#2fd9f4" r="3"></circle>
+<circle cx="550" cy="300" fill="#2fd9f4" r="3"></circle>
+</svg>
+<div class="absolute bottom-6 right-6 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-label-md text-on-surface-variant"><span class="w-2 h-2 rounded-full bg-tertiary"></span> Reader Node</div>
+<div class="flex items-center gap-2 text-label-md text-on-surface-variant"><span class="w-2 h-2 rounded-full bg-alert-red"></span> Critical Misplacement</div>
+</div>
+</div>
+</div>
+<!-- Row 3: Feed and Insights -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Left: Live Activity Feed (2/3) -->
+<div class="lg:col-span-2 glass-panel rounded-xl overflow-hidden">
+<div class="p-6 border-b border-glass-stroke flex justify-between items-center">
+<h2 class="font-title-lg text-title-lg text-on-surface">Live RFID Checkout Activity</h2>
+<button class="text-tertiary font-label-lg flex items-center hover:underline">
+                            View Archive <span class="material-symbols-outlined ml-1 text-[16px]">open_in_new</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-high/50 text-label-lg text-on-surface-variant">
+<tr>
+<th class="px-6 py-4 font-semibold uppercase">Time</th>
+<th class="px-6 py-4 font-semibold uppercase">RFID Tag</th>
+<th class="px-6 py-4 font-semibold uppercase">Book Title</th>
+<th class="px-6 py-4 font-semibold uppercase">User ID</th>
+<th class="px-6 py-4 font-semibold uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-glass-stroke">
+<tr class="hover:bg-surface-container-high/30 transition-colors">
+<td class="px-6 py-3 text-body-md">14:22:10</td>
+<td class="px-6 py-3 font-mono text-tertiary text-body-md">#RF-9921</td>
+<td class="px-6 py-3 font-medium text-on-surface text-body-md">The Great Gatsby</td>
+<td class="px-6 py-3 text-body-md">USR-8821</td>
+<td class="px-6 py-3">
+<span class="px-2 py-0.5 bg-accent-emerald/10 text-accent-emerald text-[11px] font-bold rounded border border-accent-emerald/20">SUCCESS</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/30 transition-colors">
+<td class="px-6 py-3 text-body-md">14:21:45</td>
+<td class="px-6 py-3 font-mono text-tertiary text-body-md">#RF-4412</td>
+<td class="px-6 py-3 font-medium text-on-surface text-body-md">A Brief History of Time</td>
+<td class="px-6 py-3 text-body-md">USR-1092</td>
+<td class="px-6 py-3">
+<span class="px-2 py-0.5 bg-alert-red/10 text-alert-red text-[11px] font-bold rounded border border-alert-red/20">ERROR</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/30 transition-colors">
+<td class="px-6 py-3 text-body-md">14:20:02</td>
+<td class="px-6 py-3 font-mono text-tertiary text-body-md">#RF-2301</td>
+<td class="px-6 py-3 font-medium text-on-surface text-body-md">Neuromancer</td>
+<td class="px-6 py-3 text-body-md">USR-2234</td>
+<td class="px-6 py-3">
+<span class="px-2 py-0.5 bg-accent-emerald/10 text-accent-emerald text-[11px] font-bold rounded border border-accent-emerald/20">SUCCESS</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/30 transition-colors">
+<td class="px-6 py-3 text-body-md">14:18:55</td>
+<td class="px-6 py-3 font-mono text-tertiary text-body-md">#RF-8832</td>
+<td class="px-6 py-3 font-medium text-on-surface text-body-md">Foundation</td>
+<td class="px-6 py-3 text-body-md">USR-5501</td>
+<td class="px-6 py-3">
+<span class="px-2 py-0.5 bg-accent-emerald/10 text-accent-emerald text-[11px] font-bold rounded border border-accent-emerald/20">SUCCESS</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right: AI Insights (1/3) -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Inventory Insights</h2>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-surface-container-high/50 border border-glass-stroke hover:border-tertiary/50 transition-colors cursor-pointer group">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-lg text-accent-emerald">High Demand</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:text-tertiary transition-colors">arrow_forward</span>
+</div>
+<p class="text-on-surface font-medium font-body-md">The Midnight Library</p>
+<p class="text-on-surface-variant text-label-md mt-1">AI Recommendation: Restock 5 units immediately.</p>
+</div>
+<div class="p-4 rounded-lg bg-surface-container-high/50 border border-glass-stroke hover:border-tertiary/50 transition-colors cursor-pointer group">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-lg text-accent-emerald">Trending</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:text-tertiary transition-colors">arrow_forward</span>
+</div>
+<p class="text-on-surface font-medium font-body-md">Atomic Habits</p>
+<p class="text-on-surface-variant text-label-md mt-1">Waitlist increased by 40% this week.</p>
+</div>
+<div class="p-4 rounded-lg bg-surface-container-high/50 border border-glass-stroke hover:border-tertiary/50 transition-colors cursor-pointer group">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-lg text-alert-amber">Stock Alert</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:text-tertiary transition-colors">arrow_forward</span>
+</div>
+<p class="text-on-surface font-medium font-body-md">Project Hail Mary</p>
+<p class="text-on-surface-variant text-label-md mt-1">0 available copies. 12 active holds.</p>
+</div>
+</div>
+<button class="w-full mt-6 py-2.5 bg-surface-container-highest text-on-surface font-label-lg rounded-lg border border-glass-stroke hover:bg-surface-bright transition-colors">Generate Full Report</button>
+</div>
+</div>
+</div>
+<!-- Spacer for FAB/Footer if needed -->
+<div class="h-10"></div>
+</main>
+<!-- Right Drawer: Book Inspector Panel (Opened) -->
+<div class="fixed right-0 top-0 h-screen w-80 bg-surface-container-low border-l border-glass-stroke shadow-2xl z-50 transform transition-transform duration-300 translate-x-0" id="inspector-panel">
+<div class="p-6 h-full flex flex-col">
+<div class="flex justify-between items-center mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface">Book Inspector</h2>
+<button class="text-on-surface-variant hover:text-tertiary" onclick="document.getElementById('inspector-panel').style.transform = 'translateX(100%)'">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="mb-8">
+<div class="h-48 w-full rounded-xl overflow-hidden mb-4 border border-glass-stroke">
+<img class="w-full h-full object-cover" data-alt="A stylized digital cover art of The Great Gatsby, with art-deco gold patterns on a deep navy background, enhanced by a futuristic neon-cyan glow overlay and floating RFID data particles. High-quality 3D render, dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmQxn-47PnRdvDuL3fKf8FSypNBim2XhrA093bUJBMfT5X3LjZ2l5OT9DvKOYIL_VUIHaK28tx6VEKB_T_igeQ8bfQ2gMNAenSuCnjP1F8-HuWuEPWsiGU4auKe1G6LWK523lE9ZfwzCujtomSR5BGkjeuRlhGraK4nur53h4Jjgoh8FFwDeBc9xk8M4lziG-VccJIm5SAwmYCmq8ObxfmTZkeRqFg8AnnS1l1tw-CXpGHNgBY7FI">
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">The Great Gatsby</h3>
+<p class="text-tertiary font-mono text-body-md">RFID: #RF-9921</p>
+</div>
+<div class="space-y-6 flex-1">
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-surface-container-high rounded-lg border border-glass-stroke">
+<p class="text-label-md text-on-surface-variant uppercase">Zone</p>
+<p class="text-on-surface font-medium font-body-md">Fiction</p>
+</div>
+<div class="p-3 bg-surface-container-high rounded-lg border border-glass-stroke">
+<p class="text-label-md text-on-surface-variant uppercase">Shelf</p>
+<p class="text-on-surface font-medium font-body-md">A4</p>
+</div>
+<div class="p-3 bg-surface-container-high rounded-lg border border-glass-stroke col-span-2">
+<p class="text-label-md text-on-surface-variant uppercase">Bay</p>
+<p class="text-on-surface font-medium font-body-md">2 (Section B)</p>
+</div>
+</div>
+<div class="pt-6 border-t border-glass-stroke">
+<div class="flex items-center justify-between mb-6">
+<div>
+<p class="text-on-surface font-medium font-body-md">LED Beacon</p>
+<p class="text-label-md text-on-surface-variant">Toggle physical tag light</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+</label>
+</div>
+<button class="w-full py-3 bg-tertiary text-on-tertiary font-bold font-label-lg rounded-xl shadow-lg shadow-tertiary/20 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">location_on</span>
+                        Locate on Map
+                    </button>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-glass-stroke">
+<button class="w-full py-3 border border-alert-red text-alert-red font-label-lg rounded-xl hover:bg-alert-red/10 transition-colors">
+                    Report Misplacement
+                </button>
+</div>
+</div>
+</div>
+<script>
+        // Micro-interactions and simple event handling
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if(e.currentTarget.innerText.includes('RFID')) {
+                    // Logic to toggle inspector if needed
+                }
+            });
+        });
+
+        // Simulating the Beacon light status
+        const toggle = document.querySelector('input[type="checkbox"]');
+        toggle.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                console.log("LED Beacon #RF-9921 activated.");
+            } else {
+                console.log("LED Beacon #RF-9921 deactivated.");
+            }
+        });
+    </script>
+</body></html>

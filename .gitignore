@@ -1,0 +1,53 @@
+# ==============================================================================
+# Enterprise Security & Sensitivity Protection - .gitignore
+# ==============================================================================
+
+# 1. Environment & API Secrets (ข้อมูลความลับและคีย์เข้าถึงระบบ)
+.env
+*.env
+*.env.local
+*.env.production
+*.key
+*.pem
+*.secret
+*.p12
+*.crt
+
+# 2. Protected Documents & Text Records (เอกสารและไฟล์บันทึกข้อมูล)
+*.doc
+*.docx
+*.txt
+*.pdf
+*.xlsx
+*.xls
+*.csv
+
+# 3. Google Apps Script Source Files (ซอร์สโค้ดและสคริปต์ความลับ)
+*.gs
+
+# 4. Logs & Diagnostic Files (ไฟล์บันทึกการทำงานและระบบ)
+*.log
+logs/
+*.syslog
+*.out
+
+# 5. Temporary & Cache Files (ไฟล์ชั่วคราวและไฟล์สำรอง)
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# 6. System & IDE Metadata (ไฟล์ระบบปฏิบัติการและเอดิเตอร์)
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/settings.json
+.idea/
+
+# 7. Dependencies & Build Output (โมดูลและไฟล์บิวด์)
+node_modules/
+dist/
+build/
